@@ -55,9 +55,19 @@ function useCountUpFloat(target: number, duration = 900) {
 
 // ─── Helpers ─────────────────────────────────────────────────
 
-function todayKey() { return format(new Date(), 'yyyy-MM-dd') }
+function getTodayString(): string {
+  const now = new Date()
+  const y   = now.getFullYear()
+  const m   = String(now.getMonth() + 1).padStart(2, '0')
+  const d   = String(now.getDate()).padStart(2, '0')
+  return `${y}-${m}-${d}`
+}
+function todayKey() { return getTodayString() }
 function dayKey(daysAgo: number) { return format(subDays(new Date(), daysAgo), 'yyyy-MM-dd') }
-function currentMonthKey() { return new Date().toISOString().slice(0, 7) } // YYYY-MM
+function currentMonthKey(): string {
+  const now = new Date()
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`
+}
 
 function fmtEuro(amount: number): string {
   return amount.toLocaleString('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
@@ -208,8 +218,9 @@ function TasksKPICard({ completed, total }: { completed: number; total: number }
 
 function RevenueKPICard() {
   const sales = useAppStore((s) => s.sales)
-  const today = todayKey()
+  const today = getTodayString()
   const month = currentMonthKey()
+  console.log('Today:', today, 'Sales dates:', sales.map((s) => s.date))
 
   const todayAmount = sales.filter((s) => s.date === today).reduce((sum, s) => sum + s.amount, 0)
   const todayCount  = sales.filter((s) => s.date === today).length
@@ -409,7 +420,7 @@ function GoalsPreviewCard() {
 function FinanceDayCard() {
   const sales        = useAppStore((s) => s.sales)
   const setActiveTab = useAppStore((s) => s.setActiveTab)
-  const today        = todayKey()
+  const today        = getTodayString()
   const todaySales   = sales.filter((s) => s.date === today)
   const visible      = todaySales.slice(0, 3)
 
