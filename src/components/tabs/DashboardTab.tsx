@@ -9,7 +9,7 @@ import { useTasks } from '../../hooks/useTasks'
 import { useGoals } from '../../hooks/useGoals'
 import { useTraining } from '../../hooks/useTraining'
 import { AIAnalysisModal } from '../AIAnalysisModal'
-import type { MuscleGroup, Sale } from '../../types'
+import type { MuscleGroup } from '../../types'
 
 // ─── CountUp (integer) ────────────────────────────────────────
 
@@ -206,7 +206,15 @@ function TasksKPICard({ completed, total }: { completed: number; total: number }
   )
 }
 
-function RevenueKPICard({ todayAmount, todayCount, monthAmount }: { todayAmount: number; todayCount: number; monthAmount: number }) {
+function RevenueKPICard() {
+  const sales = useAppStore((s) => s.sales)
+  const today = todayKey()
+  const month = currentMonthKey()
+
+  const todayAmount = sales.filter((s) => s.date === today).reduce((sum, s) => sum + s.amount, 0)
+  const todayCount  = sales.filter((s) => s.date === today).length
+  const monthAmount = sales.filter((s) => s.date.startsWith(month)).reduce((sum, s) => sum + s.amount, 0)
+
   const animated = useCountUpFloat(todayAmount)
   return (
     <div className="card flex flex-col" style={{ minHeight: 130, borderLeft: '4px solid #f97316' }}>
@@ -398,7 +406,8 @@ function GoalsPreviewCard() {
 
 // ─── Finance Day Card ─────────────────────────────────────────
 
-function FinanceDayCard({ sales }: { sales: Sale[] }) {
+function FinanceDayCard() {
+  const sales        = useAppStore((s) => s.sales)
   const setActiveTab = useAppStore((s) => s.setActiveTab)
   const today        = todayKey()
   const todaySales   = sales.filter((s) => s.date === today)
@@ -731,7 +740,6 @@ export function DashboardTab() {
   const stats = useMemo(() => {
     const today   = todayKey()
     const weekAgo = dayKey(7)
-    const month   = currentMonthKey()
 
     // Tasks
     const completed   = tasks.filter((t) => t.completed).length
@@ -762,11 +770,6 @@ export function DashboardTab() {
       return { label, amount, isToday: k === today }
     })
 
-    // Finance stats
-    const todayAmount = sales.filter((s) => s.date === today).reduce((sum, s) => sum + s.amount, 0)
-    const todayCount  = sales.filter((s) => s.date === today).length
-    const monthAmount = sales.filter((s) => s.date.startsWith(month)).reduce((sum, s) => sum + s.amount, 0)
-
     // Muscle split
     const thisWeekMuscles = new Set(
       sessions
@@ -778,7 +781,6 @@ export function DashboardTab() {
     return {
       completed, total, rate, activeGoals, workouts,
       dailyScore, weeklyData, weeklyRevenue,
-      todayAmount, todayCount, monthAmount,
       thisWeekMuscles,
     }
   }, [tasks, goals, sessions, sales])
@@ -830,11 +832,7 @@ export function DashboardTab() {
           <ScoreCard score={stats.dailyScore} />
           <CompletionRateCard rate={stats.rate} completed={stats.completed} total={stats.total} />
           <TasksKPICard completed={stats.completed} total={stats.total} />
-          <RevenueKPICard
-            todayAmount={stats.todayAmount}
-            todayCount={stats.todayCount}
-            monthAmount={stats.monthAmount}
-          />
+          <RevenueKPICard />
           <WorkoutsCard count={stats.workouts} />
         </div>
 
@@ -842,7 +840,7 @@ export function DashboardTab() {
         <div className="grid" style={{ gridTemplateColumns: '2fr 1fr 1fr', gap: 24, marginBottom: 20 }}>
           <TasksPreviewCard />
           <GoalsPreviewCard />
-          <FinanceDayCard sales={sales} />
+          <FinanceDayCard />
         </div>
 
         {/* Row 3 — Performance (with toggle) | Split | Quote */}
