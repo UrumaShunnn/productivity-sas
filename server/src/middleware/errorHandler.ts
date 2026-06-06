@@ -21,11 +21,11 @@ export function errorHandler(
   const status  = err.statusCode ?? 500
   const message = err.isOperational ? err.message : 'Internal server error'
 
-  console.error(`[${new Date().toISOString()}] ${status} — ${err.message}`)
+  console.error(`[${new Date().toISOString()}] ${status} — ${err.message}`, err.stack ?? '')
 
   res.status(status).json({
     error: message,
-    ...(process.env.NODE_ENV !== 'production' && !err.isOperational && { detail: err.message }),
+    ...(process.env.NODE_ENV !== 'production' && { detail: err.message, stack: err.stack }),
   })
 }
 

@@ -58,6 +58,7 @@ export async function register(req: Request, res: Response, next: NextFunction):
 
     res.status(201).json({ accessToken, refreshToken, user })
   } catch (err) {
+    console.error('[auth] Register error:', err)
     next(err)
   }
 }
