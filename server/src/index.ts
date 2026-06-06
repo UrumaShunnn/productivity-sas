@@ -58,8 +58,8 @@ app.use(errorHandler)
 
 runMigrations()
   .then(() => {
-    app.listen(PORT, () => {
-      console.log(`[server] http://localhost:${PORT}  (${process.env.NODE_ENV ?? 'development'})`)
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`[server] http://0.0.0.0:${PORT}  (${process.env.NODE_ENV ?? 'development'})`)
     })
   })
   .catch((err) => {
