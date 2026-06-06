@@ -15,9 +15,11 @@ import usersRouter    from './routes/users'
 import { errorHandler, notFound } from './middleware/errorHandler'
 import { globalRateLimit } from './middleware/rateLimit'
 
-const app     = express()
-const PORT    = Number(process.env.PORT) || 3001
-const VERSION = '1.0.0'
+const app  = express()
+const PORT = parseInt(process.env.PORT || '3001', 10)
+
+// ── Health (very first — before everything, no middleware needed) ─
+app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 
 // ── Compression ───────────────────────────────────────────────
 app.use(compression())
@@ -35,11 +37,6 @@ app.use(cors({
 app.use(morgan(process.env.NODE_ENV === 'production' ? 'combined' : 'dev'))
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-
-// ── Health (before rate limit — must respond even under load) ─
-app.get('/health', (_req, res) => {
-  res.json({ status: 'ok', version: VERSION })
-})
 
 // ── Rate limit (global) ───────────────────────────────────────
 app.use(globalRateLimit)
@@ -59,7 +56,7 @@ app.use(errorHandler)
 runMigrations()
   .then(() => {
     app.listen(PORT, '0.0.0.0', () => {
-      console.log(`[server] http://0.0.0.0:${PORT}  (${process.env.NODE_ENV ?? 'development'})`)
+      console.log(`Server listening on 0.0.0.0:${PORT}`)
     })
   })
   .catch((err) => {
