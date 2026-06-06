@@ -25,7 +25,7 @@ export function errorHandler(
 
   res.status(status).json({
     error: message,
-    ...(process.env.NODE_ENV !== 'production' && { detail: err.message, stack: err.stack }),
+    detail: err.message,
   })
 }
 

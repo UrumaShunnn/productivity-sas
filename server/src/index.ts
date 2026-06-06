@@ -18,6 +18,11 @@ import { globalRateLimit } from './middleware/rateLimit'
 const app  = express()
 const PORT = parseInt(process.env.PORT || '3001', 10)
 
+console.log('[env] NODE_ENV:',        process.env.NODE_ENV ?? 'NOT SET')
+console.log('[env] JWT_SECRET set:',  !!process.env.JWT_SECRET)
+console.log('[env] REFRESH_SECRET set:', !!process.env.REFRESH_SECRET)
+console.log('[env] DATABASE_URL set:', !!process.env.DATABASE_URL)
+
 // ── Health (very first — before everything, no middleware needed) ─
 app.get('/health', (_req, res) => res.json({ status: 'ok' }))
 
