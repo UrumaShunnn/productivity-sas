@@ -9,7 +9,7 @@ import type { Sale } from '../../types'
 // ─── Helpers ─────────────────────────────────────────────────
 
 function todayStr() {
-  return new Date().toISOString().split('T')[0]
+  return format(new Date(), 'yyyy-MM-dd')
 }
 
 function monthStr(offset = 0) {
@@ -98,7 +98,7 @@ function RevenueChart({ sales }: { sales: Sale[] }) {
     const arr: { date: string; label: string; total: number }[] = []
     for (let i = DAYS - 1; i >= 0; i--) {
       const d       = subDays(new Date(), i)
-      const dateStr = d.toISOString().split('T')[0]
+      const dateStr = format(d, 'yyyy-MM-dd')
       const total   = sales.filter((s) => s.date === dateStr).reduce((sum, s) => sum + s.amount, 0)
       arr.push({ date: dateStr, label: format(d, 'd MMM', { locale: fr }), total })
     }

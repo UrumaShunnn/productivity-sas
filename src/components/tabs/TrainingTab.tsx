@@ -38,7 +38,7 @@ const MUSCLE_BG: Record<MuscleGroup, string> = {
 // ─── Helpers ─────────────────────────────────────────────────
 
 function pad(n: number) { return n.toString().padStart(2, '0') }
-function todayStr() { return new Date().toISOString().split('T')[0] }
+function todayStr() { return format(new Date(), 'yyyy-MM-dd') }
 
 function getPersonalBest(sessions: WorkoutSession[], name: string, excludeId: string): number {
   return sessions
@@ -51,7 +51,7 @@ function getPersonalBest(sessions: WorkoutSession[], name: string, excludeId: st
 function getWeeklyVolume(sessions: WorkoutSession[]) {
   return Array.from({ length: 7 }, (_, i) => {
     const d   = subDays(new Date(), 6 - i)
-    const key = d.toISOString().split('T')[0]
+    const key = format(d, 'yyyy-MM-dd')
     return {
       label:   format(d, 'EEE', { locale: fr }),
       volume:  sessions.filter((s) => s.date.startsWith(key)).flatMap((s) => s.exercises).reduce((sum, e) => sum + e.sets * e.reps * e.weight, 0),

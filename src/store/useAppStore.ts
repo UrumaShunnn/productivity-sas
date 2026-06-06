@@ -270,7 +270,7 @@ export const useAppStore = create<AppState & Actions>()(
 
       // ── Daily reset ──
       performDailyReset: () => {
-        const today = new Date().toISOString().split('T')[0]
+        const today = new Date().toLocaleDateString('fr-CA')
         set((s) => {
           if (s.lastResetDate === today) return {}
 

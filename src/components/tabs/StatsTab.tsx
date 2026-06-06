@@ -18,8 +18,8 @@ const RADAR_RINGS = [0.25, 0.5, 0.75, 1]
 
 // ─── Helpers ──────────────────────────────────────────────────
 
-function todayKey() { return new Date().toISOString().split('T')[0] }
-function dayKey(daysAgo: number) { return subDays(new Date(), daysAgo).toISOString().split('T')[0] }
+function todayKey() { return format(new Date(), 'yyyy-MM-dd') }
+function dayKey(daysAgo: number) { return format(subDays(new Date(), daysAgo), 'yyyy-MM-dd') }
 
 function smoothPath(pts: [number, number][]): string {
   if (pts.length < 2) return pts.length === 1 ? `M${pts[0][0]},${pts[0][1]}` : ''
@@ -96,7 +96,7 @@ function useStats() {
     // Weekly volume
     const weeklyVol = Array.from({ length: 7 }, (_, i) => {
       const d   = subDays(new Date(), 6 - i)
-      const key = d.toISOString().split('T')[0]
+      const key = format(d, 'yyyy-MM-dd')
       return {
         label:   format(d, 'EEE', { locale: fr }),
         volume:  sessions.filter((s) => s.date.startsWith(key)).flatMap((s) => s.exercises).reduce((sum, e) => sum + e.sets * e.reps * e.weight, 0),

@@ -55,8 +55,8 @@ function useCountUpFloat(target: number, duration = 900) {
 
 // ─── Helpers ─────────────────────────────────────────────────
 
-function todayKey() { return new Date().toISOString().split('T')[0] }
-function dayKey(daysAgo: number) { return subDays(new Date(), daysAgo).toISOString().split('T')[0] }
+function todayKey() { return format(new Date(), 'yyyy-MM-dd') }
+function dayKey(daysAgo: number) { return format(subDays(new Date(), daysAgo), 'yyyy-MM-dd') }
 function currentMonthKey() { return new Date().toISOString().slice(0, 7) } // YYYY-MM
 
 function fmtEuro(amount: number): string {

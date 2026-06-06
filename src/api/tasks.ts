@@ -1,7 +1,7 @@
 import { apiRequest } from './client'
 import type { Task, Priority } from '../types'
 
-const today = () => new Date().toISOString().split('T')[0]
+const today = () => new Date().toLocaleDateString('fr-CA')
 
 export const getTasks = (date?: string) =>
   apiRequest<Task[]>('GET', `/tasks?date=${date ?? today()}`)
