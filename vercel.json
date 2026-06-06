@@ -1,0 +1,7 @@
+{
+  "buildCommand": "tsc -b && vite build --base=/",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/(.*)", "destination": "/index.html" }
+  ]
+}

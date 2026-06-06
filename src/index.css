@@ -1,0 +1,222 @@
+@import url("https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Syne:wght@400;500;600;700;800&display=swap");
+@import "tailwindcss";
+
+/* ─── Design Tokens ──────────────────────────────────────────── */
+@theme {
+  --color-bg:          #0c0c0c;
+  --color-surface:     #1a1a1a;
+  --color-surface-2:   #222222;
+  --color-surface-3:   #2a2a2a;
+  --color-border:      #2a2a2a;
+  --color-border-2:    #333333;
+  --color-accent:      #ff6b00;
+  --color-accent-dim:  #ff6b0020;
+  --color-accent-blue: #ffaa00;
+  --color-accent-blue-dim: #ffaa0020;
+  --color-text:        #ffffff;
+  --color-text-muted:  #aaaaaa;
+  --color-text-faint:  #555555;
+
+  --font-sans:  "Syne", ui-sans-serif, system-ui, sans-serif;
+  --font-mono:  "Space Mono", ui-monospace, monospace;
+
+  --radius-sm:  4px;
+  --radius-md:  8px;
+  --radius-lg:  12px;
+  --radius-xl:  16px;
+  --radius-2xl: 24px;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast:   150ms;
+  --duration-normal: 250ms;
+  --duration-slow:   500ms;
+}
+
+/* ─── CSS Custom Properties ──────────────────────────────────── */
+:root {
+  --bg:               #0c0c0c;
+  --surface:          #1a1a1a;
+  --surface-2:        #222222;
+  --surface-3:        #2a2a2a;
+  --border:           #2a2a2a;
+  --border-2:         #333333;
+  --accent:           #ff6b00;
+  /* Derived accent-opacity variants — recalculate when --accent changes */
+  --accent-dim:       color-mix(in srgb, var(--accent) 12%, transparent);
+  --accent-08:        color-mix(in srgb, var(--accent)  8%, transparent);
+  --accent-15:        color-mix(in srgb, var(--accent) 15%, transparent);
+  --accent-20:        color-mix(in srgb, var(--accent) 20%, transparent);
+  --accent-33:        color-mix(in srgb, var(--accent) 33%, transparent);
+  --accent-50:        color-mix(in srgb, var(--accent) 50%, transparent);
+  --accent-66:        color-mix(in srgb, var(--accent) 66%, transparent);
+  --accent-80:        color-mix(in srgb, var(--accent) 80%, transparent);
+  --accent-blue:      #ffaa00;
+  --accent-blue-dim:  #ffaa0020;
+  --text:             #ffffff;
+  --text-muted:       #aaaaaa;
+  --text-faint:       #555555;
+
+  --glow-orange:    0 0 12px #ff6b0066, 0 0 40px #ff6b0022;
+  --glow-orange-lg: 0 0 20px #ff6b0088, 0 0 60px #ff6b0033, 0 0 100px #ff6b0011;
+  --glow-amber:     0 0 12px #ffaa0066, 0 0 40px #ffaa0022;
+  --glow-amber-lg:  0 0 20px #ffaa0088, 0 0 60px #ffaa0033, 0 0 100px #ffaa0011;
+
+  /* legacy aliases used throughout components */
+  --glow-green:     var(--glow-orange);
+  --glow-green-lg:  var(--glow-orange-lg);
+  --glow-blue:      var(--glow-amber);
+  --glow-blue-lg:   var(--glow-amber-lg);
+}
+
+/* ─── Reset / Base ───────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  color-scheme: dark;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100svh;
+  overflow-x: hidden;
+}
+
+#root {
+  min-height: 100svh;
+  position: relative;
+  isolation: isolate;
+}
+
+/* ─── Grain Overlay ──────────────────────────────────────────── */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -200%;
+  width: 400%;
+  height: 400%;
+  z-index: 9999;
+  pointer-events: none;
+  opacity: 0.025;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+  background-repeat: repeat;
+  background-size: 192px 192px;
+  animation: grain 0.4s steps(1) infinite;
+  will-change: transform;
+}
+
+@keyframes grain {
+  0%   { transform: translate(0, 0); }
+  10%  { transform: translate(-2%, -3%); }
+  20%  { transform: translate(3%, 2%); }
+  30%  { transform: translate(-1%, 4%); }
+  40%  { transform: translate(2%, -2%); }
+  50%  { transform: translate(-3%, 1%); }
+  60%  { transform: translate(4%, 3%); }
+  70%  { transform: translate(-2%, -4%); }
+  80%  { transform: translate(1%, 2%); }
+  90%  { transform: translate(-4%, 3%); }
+  100% { transform: translate(2%, -1%); }
+}
+
+/* ─── Card utility ───────────────────────────────────────────── */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.card:hover {
+  border-color: rgba(255, 107, 0, 0.3);
+  box-shadow: 0 0 0 1px rgba(255, 107, 0, 0.12), 0 0 32px rgba(255, 107, 0, 0.08);
+}
+.card-title {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 16px;
+}
+
+/* ─── Glow Utilities ─────────────────────────────────────────── */
+.glow-green        { box-shadow: var(--glow-orange); }
+.glow-green-lg     { box-shadow: var(--glow-orange-lg); }
+.glow-blue         { box-shadow: var(--glow-amber); }
+.glow-blue-lg      { box-shadow: var(--glow-amber-lg); }
+.glow-text-green   { text-shadow: 0 0 10px #ff6b0099, 0 0 24px #ff6b0044; }
+.glow-text-blue    { text-shadow: 0 0 10px #ffaa0099, 0 0 24px #ffaa0044; }
+.glow-green-hover  { transition: box-shadow var(--duration-normal) ease; }
+.glow-green-hover:hover { box-shadow: var(--glow-orange); }
+.glow-blue-hover   { transition: box-shadow var(--duration-normal) ease; }
+.glow-blue-hover:hover  { box-shadow: var(--glow-amber); }
+
+/* ─── Border Utilities ───────────────────────────────────────── */
+.border-accent-glow {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent-dim), var(--glow-orange);
+}
+.border-blue-glow {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 1px var(--accent-blue-dim), var(--glow-amber);
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar         { width: 5px; height: 5px; }
+::-webkit-scrollbar-track   { background: var(--bg); }
+::-webkit-scrollbar-thumb   { background: var(--border-2); border-radius: 9999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-faint); }
+
+/* ─── Selection / Focus ──────────────────────────────────────── */
+::selection     { background: rgba(255,107,0,0.25); color: var(--accent); }
+:focus-visible  { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ─── Button scale ───────────────────────────────────────────── */
+button:not(:disabled) {
+  transform-origin: center;
+  transition: transform 0.12s cubic-bezier(0.16, 1, 0.3, 1);
+}
+button:not(:disabled):hover  { transform: scale(1.02); }
+button:not(:disabled):active { transform: scale(0.98); }
+
+/* ─── Background orbs ────────────────────────────────────────── */
+.orb {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  filter: blur(110px);
+  opacity: 0.038;
+  will-change: transform;
+}
+.orb-1 { width: 600px; height: 600px; background: #ff6b00; top: -160px; left: -160px; animation: orb-drift-1 22s ease-in-out infinite; }
+.orb-2 { width: 480px; height: 480px; background: #ffaa00; top: -80px; right: -120px; animation: orb-drift-2 28s ease-in-out infinite; }
+.orb-3 { width: 400px; height: 400px; background: #c084fc; bottom: -100px; left: 20%; animation: orb-drift-3 25s ease-in-out infinite; }
+.orb-4 { width: 340px; height: 340px; background: #ff8c00; bottom: 20%; right: 8%; animation: orb-drift-4 20s ease-in-out infinite; }
+.orb-5 { width: 520px; height: 520px; background: #ffaa00; top: 40%; left: 35%; animation: orb-drift-5 32s ease-in-out infinite; }
+
+@keyframes orb-drift-1 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(45px,-35px) scale(1.04)} 50%{transform:translate(20px,55px) scale(0.96)} 75%{transform:translate(-35px,25px) scale(1.02)} }
+@keyframes orb-drift-2 { 0%,100%{transform:translate(0,0) scale(1)} 30%{transform:translate(-50px,40px) scale(1.05)} 60%{transform:translate(30px,-45px) scale(0.95)} }
+@keyframes orb-drift-3 { 0%,100%{transform:translate(0,0) scale(1)} 20%{transform:translate(35px,-30px) scale(0.97)} 50%{transform:translate(-40px,20px) scale(1.03)} 80%{transform:translate(20px,40px) scale(1.01)} }
+@keyframes orb-drift-4 { 0%,100%{transform:translate(0,0) scale(1)} 40%{transform:translate(-30px,35px) scale(1.06)} 70%{transform:translate(40px,-20px) scale(0.94)} }
+@keyframes orb-drift-5 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(-45px,-35px) scale(1.03)} 55%{transform:translate(50px,30px) scale(0.97)} 80%{transform:translate(-20px,45px) scale(1.01)} }
+
+/* ─── Background Preset overrides (driven by data-preset on <body>) ─── */
+/* minimal: pure flat dark — no effects, no animations */
+body[data-preset="minimal"] { background-color: #0c0c0c; }
+/* All other presets inherit the default bg; effects rendered by BackgroundEffects.tsx */
+body[data-preset="default"],
+body[data-preset="matrix"],
+body[data-preset="particles"],
+body[data-preset="gradient"] { background-color: var(--bg); }

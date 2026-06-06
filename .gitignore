@@ -1,0 +1,36 @@
+# Dependencies
+node_modules/
+server/node_modules/
+
+# Build output
+dist/
+dist-electron/
+server/dist/
+
+# Environment variables
+.env
+.env.local
+server/.env
+server/.env.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+
+# SQLite databases
+*.db
+*.db-shm
+*.db-wal
+server/data/
